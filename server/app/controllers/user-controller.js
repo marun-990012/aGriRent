@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import User from "../models/user-model.js";
+import Wallet from '../models/wallet-model.js';
 
 const userController = {};
 
@@ -23,7 +24,7 @@ console.log(name)
     if (user.userType === "admin" && passcode != 'AdminPass') {
       return res.status(401).json({ message: "Passcode required for admin or enter correct passcode" });
     }
-
+    
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(password, salt);
     user.password = hashedPassword;
@@ -51,6 +52,9 @@ userController.verifyAccount = async(req,res)=>{
     user.isVerified = true;
     user.verificationToken=undefined;
     await user.save()
+    if(user.userType == 'former'){
+      await Wallet.create({userId:user._id,coins:1});
+    }
     
    return res.status(200).json({success:true,message:"Email Verifed Successfully"})
          

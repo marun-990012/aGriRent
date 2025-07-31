@@ -32,10 +32,14 @@ const userSchema=new Schema({
     verificationToken:String,
     tokenExpires :String,
     passwordResetToken:String,
-    passwordResetExpires:String
+    passwordResetExpires:String,
+    firstUpdate:{
+        type:Boolean,
+        default:false
+    }
     
 },{timestamps:true});
 
-const User=model('user',userSchema);
+const User = model('user',userSchema);
 
 export default User;
